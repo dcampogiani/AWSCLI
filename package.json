@@ -1,0 +1,10 @@
+{
+  "name": "AWSCLI",
+  "version": "0.0.1",
+  "description": "Run AWS device farm tests from node scripts",
+  "author": "Alfredo Moretta And Daniele Campogiani",
+  "devDependencies": {
+    "aws-sdk": "2.2.4",
+    "wget": "0.0.1"
+  }
+}
