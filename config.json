@@ -1,4 +1,11 @@
 {
+  "accessKeyId": "akid",
+  "secretAccessKey": "secret",
+  "region": "us-west-2",
   "projectArn": "TODO",
-  "testsZipUrl": "https://github.com/dcampogiani/AWSCLI/archive/master.zip"
+  "testProjectDetails": {
+    "username": "dcampogiani",
+    "repo": "CalabashPanaro"
+  },
+  "gitHubAccessToken": "87e18fcdabdc8420e76a1b9ae01ce2093388d543"
 }

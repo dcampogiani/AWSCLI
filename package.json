@@ -5,6 +5,9 @@
   "author": "Alfredo Moretta And Daniele Campogiani",
   "devDependencies": {
     "aws-sdk": "2.2.4",
-    "wget": "0.0.1"
+    "github": "0.2.4",
+    "download": "4.2.1",
+    "unzip": "0.1.11",
+    "git-clone": "0.1.0"
   }
 }
