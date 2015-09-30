@@ -7,6 +7,7 @@
     "aws-sdk": "^2.2.4",
     "download": "^4.2.1",
     "github": "^0.2.4",
-    "easy-zip": "^0.0.4"
+    "easy-zip": "^0.0.4",
+    "rimraf": "^2.4.3"
   }
 }

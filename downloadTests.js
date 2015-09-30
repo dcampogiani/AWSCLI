@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var rimraf = require('rimraf');
 var EasyZip = require('easy-zip').EasyZip;
 var Download = require('download');
 var GitHubApi = require("github");
@@ -30,7 +31,8 @@ var archiveManagement = function(error, data) {
     console.error(error);
   else {
     new Download({
-        extract: true,
+        mode: '755',
+        extract: true
       })
       .get(data.meta.location, '.')
       .run(function(err, files) {
@@ -38,8 +40,9 @@ var archiveManagement = function(error, data) {
         zip.zipFolder(files[0].path + '/features', function() {
           zip.writeToFile('./' + outputFileName + '.zip', function() {
             console.log("Zip created");
-            fs.rmdir(files[0].path, function(err) {
-              console.error(err);
+            rimraf(files[0].path, function(err) {
+              if (err)
+                console.error(err);
             });
           });
         })
