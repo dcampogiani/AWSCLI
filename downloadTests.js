@@ -25,21 +25,6 @@ var archiveOptions = {
   archive_format: "zipball"
 };
 
-var renameAndZip = function(source, subDir, destination) {
-  var tempFile = './temp';
-  var tempSubDir = path.normalize(tempFile + '/' + subDir);
-  fs.rename(source, tempFile, function(error) {
-    var zip = new EasyZip();
-    zip.zipFolder(tempSubDir, function() {
-      zip.writeToFile(destination + '.zip');
-      fs.rmdir(tempFile, function(error) {
-        if (error)
-          console.error(error);
-      });
-    });
-  });
-};
-
 var archiveManagement = function(error, data) {
   if (error)
     console.error(error);
@@ -49,7 +34,15 @@ var archiveManagement = function(error, data) {
       })
       .get(data.meta.location, '.')
       .run(function(err, files) {
-        renameAndZip(files[0].path, 'features', outputFileName);
+        var zip = new EasyZip();
+        zip.zipFolder(files[0].path + '/features', function() {
+          zip.writeToFile('./' + outputFileName + '.zip', function() {
+            console.log("Zip created");
+            fs.rmdir(files[0].path, function(err) {
+              console.error(err);
+            });
+          });
+        })
       });
   }
 };
