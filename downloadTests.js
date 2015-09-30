@@ -7,7 +7,15 @@ var GitHubApi = require("github");
 
 var config = require('./config.json');
 
-var outputFileName = 'CalabashTests';
+var outputFileName = process.argv[2];
+
+if (outputFileName == undefined) {
+  console.log("Usage: node downloadTests.js output.zip")
+  return;
+}
+
+if (outputFileName.indexOf(".zip") == -1)
+  outputFileName = outputFileName + '.zip';
 
 var github = new GitHubApi({
   version: "3.0.0",
@@ -38,7 +46,7 @@ var archiveManagement = function(error, data) {
       .run(function(err, files) {
         var zip = new EasyZip();
         zip.zipFolder(files[0].path + '/features', function() {
-          zip.writeToFile('./' + outputFileName + '.zip', function() {
+          zip.writeToFile('./' + outputFileName, function() {
             rimraf(files[0].path, function(err) {
               if (err)
                 console.error(err);
