@@ -39,7 +39,6 @@ var archiveManagement = function(error, data) {
         var zip = new EasyZip();
         zip.zipFolder(files[0].path + '/features', function() {
           zip.writeToFile('./' + outputFileName + '.zip', function() {
-            console.log("Zip created");
             rimraf(files[0].path, function(err) {
               if (err)
                 console.error(err);
