@@ -8,6 +8,7 @@
     "download": "^4.2.1",
     "github": "^0.2.4",
     "easy-zip": "^0.0.4",
-    "rimraf": "^2.4.3"
+    "rimraf": "^2.4.3",
+    "node-getopt": "^0.2.3"
   }
 }
