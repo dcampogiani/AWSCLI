@@ -1,4 +1,4 @@
 language: node_js
 before_script:
   - npm install
-script: downloadTests.js --gitHubAccessToken ${GITHUB_TOKEN} --repoUser dcampogiani --repoName CalabashPanaro --output Tests.zip
+script: node downloadTests.js --gitHubAccessToken ${GITHUB_TOKEN} --repoUser dcampogiani --repoName CalabashPanaro --output Tests.zip
