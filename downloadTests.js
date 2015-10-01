@@ -73,7 +73,6 @@ var archiveManagement = function(error, data) {
 };
 
 intiParameters();
-printParameters();
 initGitHubAPI().repos.getArchiveLink({
   user: parameters.repoUser,
   repo: parameters.repoName,
