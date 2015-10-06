@@ -1,9 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
-var EasyZip = require('easy-zip').EasyZip;
 var Download = require('download');
 var GitHubApi = require("github");
+var archiver = require('archiver');
 var config = require('./config.json');
 
 var parameters = {};
@@ -59,15 +59,17 @@ var archiveManagement = function(error, data) {
       })
       .get(data.meta.location, '.')
       .run(function(err, files) {
-        var zip = new EasyZip();
-        zip.zipFolder(files[0].path + '/features', function() {
-          zip.writeToFile('./' + parameters.output, function() {
-            rimraf(files[0].path, function(err) {
-              if (err)
-                console.error(err);
-            });
+        var output = fs.createWriteStream('./' + parameters.output);
+        var archive = archiver.create('zip');
+        output.on('close', function() {
+          rimraf(files[0].path, function(err) {
+            if (err)
+              console.error(err);
           });
-        })
+        });
+        archive.pipe(output);
+        archive.directory(files[0].path + '/features', 'features');
+        archive.finalize();
       });
   }
 };

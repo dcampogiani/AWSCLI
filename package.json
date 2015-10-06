@@ -4,11 +4,12 @@
   "description": "Run AWS device farm tests from node scripts",
   "author": "Alfredo Moretta And Daniele Campogiani",
   "devDependencies": {
-    "aws-sdk": "^2.2.4",
+    "aws-sdk": "^2.2.6",
     "download": "^4.2.1",
     "github": "^0.2.4",
-    "easy-zip": "^0.0.4",
     "rimraf": "^2.4.3",
-    "node-getopt": "^0.2.3"
+    "node-getopt": "^0.2.3",
+    "request": "^2.64.0",
+    "archiver": "^0.15.1"
   }
 }
