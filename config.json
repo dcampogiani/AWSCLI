@@ -1,8 +1,9 @@
 {
-  "accessKeyId": "akid",
-  "secretAccessKey": "secret",
-  "region": "us-west-2",
-  "projectArn": "TODO",
+  "aws": {
+    "accessKeyId": "akid",
+    "secretAccessKey": "secret",
+    "region": "us-west-2"
+  },
   "testProjectDetails": {
     "username": "dcampogiani",
     "repo": "CalabashPanaro"

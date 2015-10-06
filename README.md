@@ -7,3 +7,11 @@ Run AWS device farm tests from node scripts
 - node **downloadTests.js** *--gitHubAccessToken* yourAccessToken *--repoUser* dcampogiani *--repoName* CalabashPanaro *--output* Tests.zip
 - all parameters are optionals, if not presents default values (from config.json) are used
 - for more infos please use node downloadTests.js -h
+
+
+##Schedule run
+
+###Usage:
+- node **scheduleRun.js** *--AWSAccessKeyId* yourAWSAccessKeyId *--AWSSecretAccessKey* yourAWSSecretAccessKey *--AWSRegion* yourAWSRegion *--AppApk* app.apk *--TestsZip* tests.zip
+- all parameters are optionals, if not presents default values (from config.json) are used
+- for more infos please use node scheduleRun.js -h
