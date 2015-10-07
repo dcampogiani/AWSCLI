@@ -1,4 +1,6 @@
 # AWSCLI
+[![NPM](https://nodei.co/npm/awsdevicefarmcli.png?compact=true)](https://nodei.co/npm/awsdevicefarmcli/)
+
 Run AWS device farm tests from node scripts
 
 ##Download tests
