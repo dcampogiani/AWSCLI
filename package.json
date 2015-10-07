@@ -1,8 +1,33 @@
 {
   "name": "awsdevicefarmcli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Run AWS device farm tests from node scripts",
+  "keywords": [
+    "amazon",
+    "aws",
+    "devicefarm",
+    "calabash",
+    "testing",
+    "android",
+    "ios"
+  ],
   "author": "Alfredo Moretta And Daniele Campogiani",
+  "homepage": "https://github.com/dcampogiani/AWSCLI",
+  "license" : "MIT",
+  "contributors": [{
+    "name": "Alfredo Moretta",
+    "email": "alfredo.moretta@gmail.com"
+  }, {
+    "name": "Daniele Campogiani",
+    "email": "daniele.campogiani@gmail.com"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dcampogiani/AWSCLI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dcampogiani/AWSCLI/issues"
+  },
   "dependencies": {
     "aws-sdk": "^2.2.6",
     "download": "^4.2.1",
