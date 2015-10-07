@@ -2,6 +2,8 @@ var AWS = require('aws-sdk');
 var request = require('request');
 var fs = require('fs');
 var http = require('http');
+var constants = require('./constants');
+var utils = require('./utils.js');
 var config = require('./config.json');
 
 //Globar variables, I'm going to hell
@@ -10,28 +12,7 @@ var testArn;
 var projectArn;
 var devicePoolArn;
 
-var runTypeCalabash = 'CALABASH';
-var runName = getDateTime();
-var uploadTypeCalabash = 'CALABASH_TEST_PACKAGE';
-var uploadTypeAndroid = 'ANDROID_APP';
-
 var parameters = {};
-
-function getDateTime() {
-  var date = new Date();
-  var hour = date.getHours();
-  hour = (hour < 10 ? "0" : "") + hour;
-  var min = date.getMinutes();
-  min = (min < 10 ? "0" : "") + min;
-  var sec = date.getSeconds();
-  sec = (sec < 10 ? "0" : "") + sec;
-  var year = date.getFullYear();
-  var month = date.getMonth() + 1;
-  month = (month < 10 ? "0" : "") + month;
-  var day = date.getDate();
-  day = (day < 10 ? "0" : "") + day;
-  return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
-}
 
 var intiParameters = function() {
   var options = require('node-getopt').create([
@@ -89,6 +70,32 @@ var uploadFile = function(file, url, contentType, callback) {
   });
 };
 
+
+var awsUploadReadysemaphore = function(uploadArn, callback) {
+
+  var uploadResultParams = {
+    arn: uploadArn
+  };
+
+  var innerFunction = function(params, innerCallback) {
+    deviceFarm.getUpload(uploadResultParams, function(err, data) {
+      if (err)
+        callback(err, null);
+      else {
+        var status = data.upload.status;
+        if (status == constants.uploadStatus.succeeded)
+          innerCallback(null, data);
+        else if (status == constants.uploadStatus.failed)
+          innerCallback(null, data);
+        else if (status == constants.uploadStatus.initialized || status == constants.uploadStatus.processing) {
+          setTimeOut(innerFunction(uploadResultParams, innerCallback), 10000);
+        }
+      }
+    });
+  }
+  innerFunction(uploadResultParams, callback);
+};
+
 var scheduleRun = function() {
 
   var params = {
@@ -96,32 +103,33 @@ var scheduleRun = function() {
     devicePoolArn: devicePoolArn,
     projectArn: projectArn,
     test: {
-      type: runTypeCalabash,
+      type: constants.runTypeCalabash,
       testPackageArn: testArn
     },
-    name: runName
+    name: utils.getDateTime()
   };
 
-  var appUploadResultParams = {
-    arn: appArn
-  };
-  deviceFarm.getUpload(appUploadResultParams, function(err, data) {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
+  awsUploadReadysemaphore(appArn, function(err, data) {
+    if (err)
+      console.log(err, err.stack);
+    else {
+      console.log("App Upload Status: " + data.upload.status);
+      if (data.upload.status == constants.uploadStatus.succeeded)
+        awsUploadReadysemaphore(testArn, function(err, data) {
+          if (err)
+            console.log(err, err.stack);
+          else {
+            console.log("Tests Upload Status: " + data.upload.status);
+            deviceFarm.scheduleRun(params, function(err, data) {
+              if (err) console.log(err, err.stack);
+              else console.log(data);
+            });
+          }
+        })
+    }
   });
 
-  var testsUploadResultParams = {
-    arn: testArn
-  };
-  deviceFarm.getUpload(testsUploadResultParams, function(err, data) {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  });
 
-  deviceFarm.scheduleRun(params, function(err, data) {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  });
 };
 
 
@@ -157,7 +165,7 @@ var putApkCallback = function(err, httpResponse, body) {
   if (err)
     console.log(err, err.stack);
   else {
-    createUpload(projectArn, parameters.TestsZip, uploadTypeCalabash, 'application/octet-stream', createUploadTestCallback);
+    createUpload(projectArn, parameters.TestsZip, constants.uploadTypeCalabash, 'application/octet-stream', createUploadTestCallback);
   }
 };
 
@@ -177,7 +185,7 @@ var listProjectsCallback = function(err, data) {
     console.log(err, err.stack);
   else {
     projectArn = data.projects[0].arn;
-    createUpload(projectArn, parameters.AppApk, uploadTypeAndroid, 'application/octet-stream', createUploadAPKCallback);
+    createUpload(projectArn, parameters.AppApk, constants.uploadTypeAndroid, 'application/octet-stream', createUploadAPKCallback);
   }
 };
 
