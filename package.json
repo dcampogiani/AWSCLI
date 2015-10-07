@@ -1,6 +1,6 @@
 {
   "name": "awsdevicefarmcli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Run AWS device farm tests from node scripts",
   "keywords": [
     "amazon",
@@ -13,7 +13,7 @@
   ],
   "author": "Alfredo Moretta And Daniele Campogiani",
   "homepage": "https://github.com/dcampogiani/AWSCLI",
-  "license" : "MIT",
+  "license": "MIT",
   "contributors": [{
     "name": "Alfredo Moretta",
     "email": "alfredo.moretta@gmail.com"

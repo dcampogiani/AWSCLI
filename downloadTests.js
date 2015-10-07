@@ -32,11 +32,6 @@ var intiParameters = function() {
     parameters.output = parameters.output + '.zip';
 };
 
-var printParameters = function() {
-  console.log('Using following parameters: ');
-  console.log(parameters);
-}
-
 var initGitHubAPI = function() {
   var instance = new GitHubApi({
     version: "3.0.0",
@@ -50,9 +45,10 @@ var initGitHubAPI = function() {
 }
 
 var archiveManagement = function(error, data) {
-  if (error)
+  if (error) {
     console.error(error);
-  else {
+    process.exit(1);
+  } else {
     new Download({
         mode: '755',
         extract: true
@@ -63,8 +59,11 @@ var archiveManagement = function(error, data) {
         var archive = archiver.create('zip');
         output.on('close', function() {
           rimraf(files[0].path, function(err) {
-            if (err)
+            if (err) {
               console.error(err);
+              process.exit(1);
+            } else
+              console.log('Donwloaded tests in ' + parameters.output);
           });
         });
         archive.pipe(output);
