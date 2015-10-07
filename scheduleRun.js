@@ -102,6 +102,22 @@ var scheduleRun = function() {
     name: runName
   };
 
+  var appUploadResultParams = {
+    arn: appArn
+  };
+  deviceFarm.getUpload(appUploadResultParams, function(err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  });
+
+  var testsUploadResultParams = {
+    arn: testArn
+  };
+  deviceFarm.getUpload(testsUploadResultParams, function(err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  });
+
   deviceFarm.scheduleRun(params, function(err, data) {
     if (err) console.log(err, err.stack);
     else console.log(data);
