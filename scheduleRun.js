@@ -88,7 +88,7 @@ var awsUploadReadysemaphore = function(uploadArn, callback) {
         else if (status == constants.uploadStatus.failed)
           innerCallback(null, data);
         else if (status == constants.uploadStatus.initialized || status == constants.uploadStatus.processing) {
-          setTimeOut(innerFunction(uploadResultParams, innerCallback), 10000);
+          setTimeout(innerFunction(uploadResultParams, innerCallback), 10000);
         }
       }
     });
