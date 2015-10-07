@@ -1,6 +1,6 @@
 {
   "name": "awsdevicefarmcli",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Run AWS device farm tests from node scripts",
   "author": "Alfredo Moretta And Daniele Campogiani",
   "dependencies": {
