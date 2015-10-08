@@ -14,6 +14,6 @@ Run AWS device farm tests from node scripts
 ##Schedule run
 
 ###Usage:
-- node **scheduleRun.js** *--AWSAccessKeyId* yourAWSAccessKeyId *--AWSSecretAccessKey* yourAWSSecretAccessKey *--AWSRegion* yourAWSRegion *--AppApk* app.apk *--TestsZip* tests.zip
+- node **scheduleRun.js** *--AWSAccessKeyId* yourAWSAccessKeyId *--AWSSecretAccessKey* yourAWSSecretAccessKey *--AWSRegion* yourAWSRegion *--AppApkPath* app.apk *--TestsZipPath* tests.zip
 - all parameters are optionals, if not presents default values (from config.json) are used
 - for more infos please use node scheduleRun.js -h
