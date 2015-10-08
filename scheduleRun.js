@@ -4,6 +4,7 @@ var fs = require('fs');
 var http = require('http');
 var constants = require('./constants');
 var utils = require('./utils.js');
+var path = require('path');
 var config = require('./config.json');
 
 //Globar variables, I'm going to hell
@@ -19,29 +20,31 @@ var intiParameters = function() {
     ['', 'AWSAccessKeyId=ARG', 'AWS AccessKeyId'],
     ['', 'AWSSecretAccessKey=ARG', 'AWS SecretAccessKey'],
     ['', 'AWSRegion=ARG', 'AWS region'],
-    ['', 'AppApk=ARG', 'App apk'],
-    ['', 'TestsZip=ARG', 'Tests zip'],
+    ['', 'AppApkPath=ARG', 'App apk path'],
+    ['', 'TestsZipPath=ARG', 'Tests zip path'],
     ['h', 'help', 'display this help'],
   ]).bindHelp().parseSystem().options;
   parameters.AWSAccessKeyId = options.AWSAccessKeyId;
   parameters.AWSSecretAccessKey = options.AWSSecretAccessKey;
   parameters.AWSRegion = options.AWSRegion;
-  parameters.AppApk = options.AppApk;
-  parameters.TestsZip = options.TestsZip;
+  parameters.AppApkPath = options.AppApkPath;
+  parameters.TestsZipPath = options.TestsZipPath;
   if (parameters.AWSAccessKeyId == undefined)
     parameters.AWSAccessKeyId = config.aws.accessKeyId;
   if (parameters.AWSSecretAccessKey == undefined)
     parameters.AWSSecretAccessKey = config.aws.secretAccessKey;
   if (parameters.AWSRegion == undefined)
     parameters.AWSRegion = config.aws.region;
-  if (parameters.AppApk == undefined)
-    parameters.AppApk = 'app.apk';
-  if (parameters.AppApk.indexOf(".apk") == -1)
-    parameters.AppApk = parameters.AppApk + '.apk';
-  if (parameters.TestsZip == undefined)
-    parameters.TestsZip = 'tests.zip';
-  if (parameters.TestsZip.indexOf(".zip") == -1)
-    parameters.TestsZip = parameters.output + '.zip';
+  if (parameters.AppApkPath == undefined)
+    parameters.AppApkPath = path.normalize('./app.apk');
+  if (parameters.AppApkPath.indexOf(".apk") == -1)
+    parameters.AppApkPath = parameters.AppApkPath + '.apk';
+  parameters.AppApkPath = path.resolve(parameters.AppApkPath);
+  if (parameters.TestsZipPath == undefined)
+    parameters.TestsZipPath = path.normalize('./tests.zip');
+  if (parameters.TestsZipPath.indexOf(".zip") == -1)
+    parameters.TestsZipPath = parameters.output + '.zip';
+  parameters.TestsZipPath = path.resolve(parameters.TestsZipPath);
 };
 
 var createUpload = function(projectArn, name, type, contentType, callback) {
@@ -166,7 +169,7 @@ var createUploadTestCallback = function(err, data) {
     var whereToPut = data.upload.url;
     var contentType = data.upload.contentType;
     testArn = data.upload.arn;
-    uploadFile('./' + parameters.TestsZip, whereToPut, contentType, putTestCallback);
+    uploadFile(parameters.TestsZipPath, whereToPut, contentType, putTestCallback);
   }
 };
 
@@ -174,7 +177,7 @@ var putApkCallback = function(err, httpResponse, body) {
   if (err)
     console.log(err, err.stack);
   else {
-    createUpload(projectArn, parameters.TestsZip, constants.uploadTypeCalabash, 'application/octet-stream', createUploadTestCallback);
+    createUpload(projectArn, path.basename(parameters.TestsZipPath), constants.uploadTypeCalabash, 'application/octet-stream', createUploadTestCallback);
   }
 };
 
@@ -185,7 +188,7 @@ var createUploadAPKCallback = function(err, data) {
     var whereToPut = data.upload.url;
     var contentType = data.upload.contentType;
     appArn = data.upload.arn;
-    uploadFile('./' + parameters.AppApk, whereToPut, contentType, putApkCallback);
+    uploadFile(parameters.AppApkPath, whereToPut, contentType, putApkCallback);
   }
 };
 
@@ -194,7 +197,7 @@ var listProjectsCallback = function(err, data) {
     console.log(err, err.stack);
   else {
     projectArn = data.projects[0].arn;
-    createUpload(projectArn, parameters.AppApk, constants.uploadTypeAndroid, 'application/octet-stream', createUploadAPKCallback);
+    createUpload(projectArn, path.basename(parameters.AppApkPath), constants.uploadTypeAndroid, 'application/octet-stream', createUploadAPKCallback);
   }
 };
 
