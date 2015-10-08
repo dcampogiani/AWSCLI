@@ -37,17 +37,14 @@ var intiParameters = function() {
     parameters.AWSRegion = config.aws.region;
   if (parameters.AppApkPath == undefined)
     parameters.AppApkPath = path.normalize('./app.apk');
-  if (parameters.AppApkPath.indexOf(".apk") == -1)
-    parameters.AppApkPath = parameters.AppApkPath + '.apk';
   parameters.AppApkPath = path.resolve(parameters.AppApkPath);
   if (parameters.TestsZipPath == undefined)
     parameters.TestsZipPath = path.normalize('./tests.zip');
-  if (parameters.TestsZipPath.indexOf(".zip") == -1)
-    parameters.TestsZipPath = parameters.output + '.zip';
   parameters.TestsZipPath = path.resolve(parameters.TestsZipPath);
 };
 
 var createUpload = function(projectArn, name, type, contentType, callback) {
+  console.log('Creating upload request on AWS for ' + name);
   deviceFarm.createUpload({
     name: name,
     projectArn: projectArn,
@@ -64,6 +61,7 @@ var uploadFile = function(file, url, contentType, callback) {
       process.exit(1);
     }
 
+    console.log('Uploading ' + file);
     request.put({
       uri: url,
       method: "PUT",
@@ -94,6 +92,7 @@ var awsUploadReadysemaphore = function(uploadArn, callback) {
         else if (status == constants.uploadStatus.failed)
           innerCallback(null, data);
         else if (status == constants.uploadStatus.initialized || status == constants.uploadStatus.processing) {
+          console.log('AWS is still processing upload');
           setTimeout(innerFunction, 10000, uploadResultParams, innerCallback);
         }
       }
@@ -134,7 +133,7 @@ var scheduleRun = function() {
                 console.log(err, err.stack);
                 process.exit(1);
               } else
-                console.log("Run scheduled");
+                console.log("Run is " + data.run.status);
             });
           }
         })
