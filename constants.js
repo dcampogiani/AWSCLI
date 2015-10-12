@@ -16,4 +16,5 @@ var uploadStatus = {
 define('runTypeCalabash', 'CALABASH');
 define('uploadTypeCalabash', 'CALABASH_TEST_PACKAGE');
 define('uploadTypeAndroid', 'ANDROID_APP');
+define('uploadTypeiOS', 'IOS_APP');
 define('uploadStatus', uploadStatus);

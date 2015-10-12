@@ -20,14 +20,14 @@ var intiParameters = function() {
     ['', 'AWSAccessKeyId=ARG', 'AWS AccessKeyId'],
     ['', 'AWSSecretAccessKey=ARG', 'AWS SecretAccessKey'],
     ['', 'AWSRegion=ARG', 'AWS region'],
-    ['', 'AppApkPath=ARG', 'App apk path'],
+    ['', 'AppPath=ARG', 'App path'],
     ['', 'TestsZipPath=ARG', 'Tests zip path'],
     ['h', 'help', 'display this help'],
   ]).bindHelp().parseSystem().options;
   parameters.AWSAccessKeyId = options.AWSAccessKeyId;
   parameters.AWSSecretAccessKey = options.AWSSecretAccessKey;
   parameters.AWSRegion = options.AWSRegion;
-  parameters.AppApkPath = options.AppApkPath;
+  parameters.AppPath = options.AppPath;
   parameters.TestsZipPath = options.TestsZipPath;
   if (parameters.AWSAccessKeyId == undefined)
     parameters.AWSAccessKeyId = config.aws.accessKeyId;
@@ -35,12 +35,23 @@ var intiParameters = function() {
     parameters.AWSSecretAccessKey = config.aws.secretAccessKey;
   if (parameters.AWSRegion == undefined)
     parameters.AWSRegion = config.aws.region;
-  if (parameters.AppApkPath == undefined)
-    parameters.AppApkPath = path.normalize('./app.apk');
-  parameters.AppApkPath = path.resolve(parameters.AppApkPath);
+  if (parameters.AppPath == undefined) {
+    console.error('AppPath argument is mandatory');
+    process.exit(1);
+  }
+  parameters.AppPath = path.resolve(parameters.AppPath);
   if (parameters.TestsZipPath == undefined)
     parameters.TestsZipPath = path.normalize('./tests.zip');
   parameters.TestsZipPath = path.resolve(parameters.TestsZipPath);
+
+  if (parameters.AppPath.indexOf('.apk') > -1)
+    parameters.uploadType = constants.uploadTypeAndroid;
+  else if (parameters.AppPath.indexOf('.ipa') > -1)
+    parameters.uploadType = constants.uploadTypeiOS;
+  else {
+    console.error('App format not supported');
+    process.exit(1);
+  }
 };
 
 var createUpload = function(projectArn, name, type, contentType, callback) {
@@ -172,7 +183,7 @@ var createUploadTestCallback = function(err, data) {
   }
 };
 
-var putApkCallback = function(err, httpResponse, body) {
+var putAppCallback = function(err, httpResponse, body) {
   if (err)
     console.log(err, err.stack);
   else {
@@ -180,14 +191,14 @@ var putApkCallback = function(err, httpResponse, body) {
   }
 };
 
-var createUploadAPKCallback = function(err, data) {
+var createUploadAppCallback = function(err, data) {
   if (err)
     console.log(err, err.stack);
   else {
     var whereToPut = data.upload.url;
     var contentType = data.upload.contentType;
     appArn = data.upload.arn;
-    uploadFile(parameters.AppApkPath, whereToPut, contentType, putApkCallback);
+    uploadFile(parameters.AppPath, whereToPut, contentType, putAppCallback);
   }
 };
 
@@ -196,7 +207,7 @@ var listProjectsCallback = function(err, data) {
     console.log(err, err.stack);
   else {
     projectArn = data.projects[0].arn;
-    createUpload(projectArn, path.basename(parameters.AppApkPath), constants.uploadTypeAndroid, 'application/octet-stream', createUploadAPKCallback);
+    createUpload(projectArn, path.basename(parameters.AppPath), parameters.uploadType, 'application/octet-stream', createUploadAppCallback);
   }
 };
 
