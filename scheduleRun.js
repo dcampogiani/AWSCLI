@@ -122,7 +122,7 @@ var scheduleRun = function() {
       type: constants.runTypeCalabash,
       testPackageArn: testArn
     },
-    name: utils.getDateTime()
+    name: path.basename(parameters.AppPath) + ' ' + utils.getDateTime()
   };
 
   awsUploadReadysemaphore(appArn, function(err, data) {
